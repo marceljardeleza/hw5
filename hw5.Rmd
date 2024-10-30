@@ -63,10 +63,10 @@ data <- read_csv("homicide-data.csv")
 tibble(data)
 
 data %>% 
-  filter( city == "Denver")
+  filter( city == "Denver") 
 
 
-#we need solved vs unsoled homicides in different facets
+#we need solved vs unsolved homicides in different facets
 #different color to show three race groups with the highest number of homicides (fct_lump)
 ```
 
