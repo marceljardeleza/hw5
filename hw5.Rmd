@@ -61,26 +61,30 @@ Use tigris to download boundaries for some sub-city geography (e.g., tracts, blo
 Use different facets for solved versus unsolved homicides and different colors to show the three race groups with the highest number of homicides for that city (you may find the fct_lump function from forcats useful for this).
 
 ```{r}
+
+co <- counties(state = "CO", cb = TRUE, class = "sf") %>% 
+  st_set_crs(4269)  # need to include The Coordinate Reference System (CRS) (how to translate your coordinates to places in the world) otherwise it will not create the plot
+view(co)
+
 # colorado map 
 library(tigris)
 
 co_counties <- counties(state = "CO", cb = TRUE, class = "sf") %>% 
-  st_set_crs(4269) # %>%  # need to include The Coordinate Reference System (CRS) (how to translate your coordinates to places in the world) otherwise it will not create the plot
-  filter_place("denver")
+  st_set_crs(4269) %>%  # need to include The Coordinate Reference System (CRS) (how to translate your coordinates to places in the world) otherwise it will not create the plot
+  filter( NAMELSAD == "Denver County") # filtered to denver county
 
-View(co_counties)
 tibble(co_counties)
+
 
 #main homicide data
 data <- read_csv("homicide-data.csv") 
 tibble(data)
 
 
+
 # selectimg out colorado data from main homicide data
 co_data_coord <- data %>% 
   filter( state == "CO") %>% 
-  mutate(unsolved = !disposition == "Closed by arrest") %>% 
-  mutate(solved = disposition == "Closed by arrest") %>% 
   select(!c(victim_sex, 
             victim_age,
             victim_first, 
@@ -88,63 +92,34 @@ co_data_coord <- data %>%
             reported_date, 
             uid, 
             city,
-            state,
-            unsolved,
-            solved)) %>% 
+            state)) %>% 
+    mutate(disposition = case_when(
+    disposition == "Closed without arrest" ~ "unsolved",
+    disposition == "Closed by arrest" ~ "solved",
+    disposition == "Open/No arrest" ~ "unsolved")) %>% 
   st_as_sf(coords = c('lon', 'lat')) %>% 
   st_set_crs(4269)
   
 
-tibble(co_data_coord)
-  
+# Figure out which three race groups had the hihest number of homicides for denver
+co_data_coord %>% 
+  ggplot(aes(x=victim_race))+
+  geom_bar()
+
+
+# filter out the race groups with the highest number of homicides
+co_data_coord_race <- co_data_coord %>% 
+  filter(victim_race == c("Black", "Hispanic", "White"))
+
+
 
 # creating map of the data, created a map, but not zoomed
 ggplot() +
   geom_sf(data = co_counties) +  
-  geom_sf(data= co_data_coord, aes(color = disposition,
-                                   shape = victim_race)) +
-  geom_sf_text(data = co_counties, aes(label = NAME, label.size = 0.05))
-
-
-
-
-## 1) trying to zoom, but doesnt show map details like county name
-  ggplot() +
-  geom_sf(data = co_counties) +
-  geom_sf(data= co_data_coord, aes(color = disposition,
-                                   shape = victim_race)) +
-  geom_sf_text(data = co_counties, aes(label = NAME, label.size = 0.05)) +
-  coord_sf(xlim = c(106, 104),  #zooming in, but not keeping the points
-         ylim = c(39, 41),
-         expand = TRUE,
-         crs = 4269)
-
-
-  
-  
-  
-  
-  
-## 2) cropping the data directly, but still not showing the roads and city boundaries and names
-crop_factor <- st_bbox(c(xmin = 106, 
-                         xmax = 104, 
-                         ymax = 39, 
-                         ymin = 41),
-                       crs = st_crs(co_counties))
-
-den_cropped <- st_crop(co_counties, crop_factor)
-
-ggplot() + 
-  geom_sf(data = den_cropped)+ 
-  geom_sf(data= co_data_coord, aes(color = disposition,
-                                   shape = victim_race)) +
-  geom_sf_text(data = den_cropped, aes(label = NAME))
-
-
-  
-  #we need solved vs unsolved homicides in different facets
-#different color to show three race groups with the highest number of homicides (fct_lump)
-
+  geom_sf(data= co_data_coord_race, aes(shape = disposition,
+                                   color = victim_race)) +
+  geom_sf_text(data = co_counties, aes(label = NAME, label.size = 0.05))+
+  theme_bw()
 
 ```
 
