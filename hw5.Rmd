@@ -108,7 +108,7 @@ ggplot() +
 
 
 
-## trying to zoom
+## 1) trying to zoom, but doesnt show map details like county name
   ggplot() +
   geom_sf(data = co_counties) +
   geom_sf(data= co_data_coord, aes(color = disposition,
@@ -125,7 +125,7 @@ ggplot() +
   
   
   
-## cropping the data directly, but still not showing the roads and city boundaries
+## 2) cropping the data directly, but still not showing the roads and city boundaries and names
 crop_factor <- st_bbox(c(xmin = 106, 
                          xmax = 104, 
                          ymax = 39, 
