@@ -113,7 +113,7 @@ ggplot() +
   geom_sf(data= co_data_coord_race, aes(shape = disposition,
                                    color = victim_race)) +
   geom_sf_text(data = co_counties, aes(label = NAME, label.size = 0.05))+
-  theme_bw()+
+  theme_minimal()+
   ylab("longitude")+
   xlab("latitude")
 
