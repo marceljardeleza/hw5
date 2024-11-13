@@ -71,12 +71,9 @@ co_counties <- counties(state = "CO", cb = TRUE, class = "sf") %>%
   st_set_crs(4269) %>%  # need to include The Coordinate Reference System (CRS) (how to translate your coordinates to places in the world) otherwise it will not create the plot
   filter( NAMELSAD == "Denver County") # filtered to denver county
 
-tibble(co_counties)
-
 
 #main homicide data
 data <- read_csv("homicide-data.csv") 
-tibble(data)
 
 
 # selectimg out colorado data from main homicide data
@@ -116,12 +113,10 @@ ggplot() +
   geom_sf(data= co_data_coord_race, aes(shape = disposition,
                                    color = victim_race)) +
   geom_sf_text(data = co_counties, aes(label = NAME, label.size = 0.05))+
-  theme_bw()
+  theme_bw()+
+  ylab("longitude")+
+  xlab("latitude")
 
 ```
 
-**Choice 2**: Recreate the graph shown below.
-It shows monthly homicides in Baltimore, with a reference added for the date of the arrest of Freddie Gray and color used to show colder months (November through April) versus warmer months (May through October).
-There is a smooth line added to help show seasonal and long-term trends in this data.
-
-![](https://geanders.github.io/RProgrammingForResearch/figures/hw_5_plot.png){width="535"}
+"
