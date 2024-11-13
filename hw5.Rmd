@@ -3,8 +3,8 @@ title: "hw5"
 author: "MarcelJardeleza"
 date: "2024-10-29"
 output: 
-  pdf_document: default
   word_document: default
+  pdf_document: default
 editor_options: 
   markdown: 
     wrap: sentence
@@ -64,10 +64,6 @@ Use different facets for solved versus unsolved homicides and different colors t
 
 ```{r}
 
-co <- counties(state = "CO", cb = TRUE, class = "sf") %>% 
-  st_set_crs(4269)  # need to include The Coordinate Reference System (CRS) (how to translate your coordinates to places in the world) otherwise it will not create the plot
-view(co)
-
 # colorado map 
 library(tigris)
 
@@ -81,7 +77,6 @@ tibble(co_counties)
 #main homicide data
 data <- read_csv("homicide-data.csv") 
 tibble(data)
-
 
 
 # selectimg out colorado data from main homicide data
