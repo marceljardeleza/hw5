@@ -90,19 +90,15 @@ co_data_coord <- data %>%
     disposition == "Open/No arrest" ~ "unsolved")) %>% 
   st_as_sf(coords = c('lon', 'lat')) %>% 
   st_set_crs(4269)
-  
 
 # Figure out which three race groups had the hihest number of homicides for denver
 co_data_coord %>% 
   ggplot(aes(x=victim_race))+
   geom_bar()
 
-
 # filter out the race groups with the highest number of homicides
 co_data_coord_race <- co_data_coord %>% 
   filter(victim_race == c("Black", "Hispanic", "White"))
-
-
 
 # creating map of the data, created a map, but not zoomed
 ggplot() +
@@ -112,7 +108,8 @@ ggplot() +
   geom_sf_text(data = co_counties, aes(label = NAME, label.size = 0.05))+
   theme_minimal()+
   ylab("longitude")+
-  xlab("latitude")
+  xlab("latitude")+
+  labs(color = "victim race")
 
 ```
 
