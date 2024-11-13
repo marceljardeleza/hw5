@@ -63,7 +63,6 @@ Use tigris to download boundaries for some sub-city geography (e.g., tracts, blo
 Use different facets for solved versus unsolved homicides and different colors to show the three race groups with the highest number of homicides for that city (you may find the fct_lump function from forcats useful for this).
 
 ```{r}
-
 # colorado map 
 library(tigris)
 
@@ -71,10 +70,8 @@ co_counties <- counties(state = "CO", cb = TRUE, class = "sf") %>%
   st_set_crs(4269) %>%  # need to include The Coordinate Reference System (CRS) (how to translate your coordinates to places in the world) otherwise it will not create the plot
   filter( NAMELSAD == "Denver County") # filtered to denver county
 
-
 #main homicide data
 data <- read_csv("homicide-data.csv") 
-
 
 # selectimg out colorado data from main homicide data
 co_data_coord <- data %>% 
